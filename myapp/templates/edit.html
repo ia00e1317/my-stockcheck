@@ -1,0 +1,81 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="bg-warning mb-1 p-1">
+    <h4>商品URLを登録・編集</h4>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+    <div class="flashes errorArea mb-1 p-1">
+    {% for category, message in messages %}
+    <p class="{{ category }}">{{ message }}</p>
+    {% endfor %}
+    </div>
+{% endif %}
+{% endwith %}
+
+<form action="/update" method="post">
+    <div class="mb-1">
+        <button type="submit" class='btn btn-primary btn-sm'>商品保存</button>
+        <a href='/' class='btn btn-outline-primary btn-sm'>一覧画面</a>
+        <a href='/' class='btn btn-dark btn-sm disabled'>商品編集</a>
+        <a href='/definition' class='btn btn-outline-primary btn-sm'>サイト定義</a>
+    </div>
+
+    <div class="small">
+        <table class='table-bordered table-striped table-condensed'>
+            <tr style='text-align:center;'>
+                <th style="width:2%;">No.</th>
+                <th style="width:10%;">サイト種類</th>
+                <th style="width:35%;">商品名</th>
+                <th>URL</th>
+            </tr>
+            {% for product in products %}
+            <tr>
+                <td>{{loop.index}}.</td>
+                <td>
+                    <select id="siteDrop{{ loop.index }}" name="siteDrop{{ loop.index }}">
+                        <option value="0" label="未選択">未選択</option><!-- selected-->
+                        {% for type in typeList %}
+                        {% if type.site != '' %}
+                        <option value="{{type.type}}" label="{{type.site}}">{{type.site}}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </td>
+                <td><input type="text" name="name{{ loop.index }}" value="{{ product.name }}" style="width:100%;"></td>
+                <td><input type="text" name="url{{ loop.index }}" value="{{ product.url }}" style="width:100%;"></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</form>
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript">
+    var products = {{ products| tojson }};
+    for (var i = 0; i < products.length; i++) {
+        var code = String(i + 1);
+        var val = products[i]["type"];
+        if (!val) { val = "0"; }
+        $("#siteDrop" + code).val(val);
+    }
+</script>
+{% endblock %}
+
+<!--
+
+    <form action="/update/{}" method="post">
+        <label for="title">タイトル</label><br>
+        <input type="text" name="title" value="{}">
+        <p></p>
+        <label for="content">本文</label><br>
+        <textarea name="content" cols="40" rows="10">{}</textarea>
+        <p></p>
+        <button type="submit">保存する</button>
+        <a href='/show/{}'>キャンセル</a>
+    </form>
+
+-->

@@ -1,0 +1,49 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="bg-warning mb-1 p-1">
+    <h4>タグ定義を登録・編集</h4>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+    <div class="flashes errorArea mb-1 p-1">
+    {% for category, message in messages %}
+    <p class="{{ category }}">{{ message }}</p>
+    {% endfor %}
+    </div>
+{% endif %}
+{% endwith %}
+
+<form action="/addition" method="post">
+    <div class="mb-2">
+        <button type="submit" class='btn btn-primary btn-sm'>定義保存</button>
+        <a href='/' class='btn btn-outline-primary btn-sm'>一覧画面</a>
+        <a href='/edit' class='btn btn-outline-primary btn-sm'>商品編集</a>
+        <a href='/definition' class='btn btn-dark btn-sm disabled'>サイト定義</a>
+    </div>
+
+    <div class="small ">
+    {% for definition in definitions %}
+        <table class='table-bordered table-condensed mb-3'>
+            <tr>
+                <td class="bg-N">No.<br><input type="text" name="type{{ loop.index }}" value="{{ definition.type }}" disabled size="12"></td class="bg-A">
+                <td class="bg-A">【A:<span class="text-danger">必須</span>】クラス名<br><input type="text" name="classname_1{{ loop.index }}" value="{{ definition.classname_1 }}" style="width:100%;"></td>
+                <td class="bg-A">【A:<span class="text-danger">必須</span>】タグ種類<br><input type="text" name="tagtype_1{{ loop.index }}" value="{{ definition.tagtype_1 }}" style="width:100%;"></td>
+                <td class="bg-A">【A:任意】属性種類<br><input type="text" name="attribute_1{{ loop.index }}" value="{{ definition.attribute_1 }}" style="width:100%;"></td>
+                <td class="bg-A">【A:<span class="text-danger">必須</span>】キーワード<br><input type="text" name="keyword_1{{ loop.index }}" value="{{ definition.keyword_1 }}" style="width:100%;"></td>
+            </tr>
+            <tr>
+                <td class="bg-N">サイト名<br><input type="text" name="site{{ loop.index }}" value="{{ definition.site }}" size="12"></td class="bg-N">
+                <td class="bg-B">【B:<span class="text-danger">必須</span>】クラス名<br><input type="text" name="classname_2{{ loop.index }}" value="{{ definition.classname_2 }}" style="width:100%;"></td>
+                <td class="bg-B">【B:<span class="text-danger">必須</span>】タグ種類<br><input type="text" name="tagtype_2{{ loop.index }}" value="{{ definition.tagtype_2 }}" style="width:100%;"></td>
+                <td class="bg-B">【B:任意】属性種類<br><input type="text" name="attribute_2{{ loop.index }}" value="{{ definition.attribute_2 }}" style="width:100%;"></td>
+                <td class="bg-B">【B:<span class="text-danger">必須</span>】キーワード<br><input type="text" name="keyword_2{{ loop.index }}" value="{{ definition.keyword_2 }}" style="width:100%;"></td>
+            </tr>
+        </table>
+
+        {% endfor %}
+    </div>
+</form>
+
+{% endblock %}

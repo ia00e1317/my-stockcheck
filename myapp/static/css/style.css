@@ -1,0 +1,50 @@
+#loading {
+  display: table;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #fff;
+  opacity: 0.8;
+}
+ 
+#loading .loadingMsg {
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+  padding-top: 140px;
+  background: url("../img/image.gif") center center no-repeat;
+}
+
+.errorArea p {
+  border-bottom: 0.5px solid white;
+  width: 100%;
+  color: white;
+  padding-left: 5px;
+  margin-bottom: 0px;
+}
+
+.errorArea .failed {
+  background-color: crimson;
+}
+
+.errorArea .success {
+  background-color: #007BFF;
+}
+
+.bg-N {
+  background-color: lightcyan;
+}
+
+.bg-A {
+  background-color: mistyrose;
+  width:23%;
+}
+
+.bg-B {
+  background-color: #e0ffe0;
+  width:23%;
+}
+
+

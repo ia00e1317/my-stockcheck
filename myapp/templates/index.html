@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+{% block content %}
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/javascript.js') }}"></script>
+
+    <div class="bg-warning mb-1 p-1">
+        <h4>
+            {% if executedate.date !='0000-00-00' %}
+                {{ executedate.date }}：在庫確認実施
+            {% else %}
+                在庫確認未実施
+            {% endif %}
+        </h4>
+    </div>
+    <div class="mb-1">
+        <a href='/stockcheck' class='btn btn-primary btn-sm' id='proc_button'>在庫確認</a>
+        <a href='/' class='btn btn-dark btn-sm disabled'>一覧画面</a>
+        <a href='/edit' class='btn btn-outline-primary btn-sm'>商品編集</a>
+        <a href='/definition' class='btn btn-outline-primary btn-sm'>サイト定義</a>
+    </div>
+
+    <div class="small">
+    <table class='table-bordered table-striped table-condensed' style='table-layout: fixed;width: 100%;'><!--fixed auto-->
+        <colgroup>
+            <col style="width:3%;">
+            <col style="width:2%;">
+            <col style="width:10%;">
+            <col style="width:30%;">
+            <col>
+        </colgroup>
+        <tr style='text-align:center; background-color: lightgray;'>
+            <th>在庫</th><!-- style=" padding: 1px;"-->
+            <th></th>
+            <th>サイト</th>
+            <th>商品名</th>
+            <th>商品URL</th>
+        </tr>
+        {% for product in products %}
+        <tr>
+            <td style='text-align:center;'><b>{{ product.result }}</b></td>
+            <td style='text-align:center;'>{{ loop.index }}.</td>
+            <td style='word-wrap: break-word;'>{{ product.site }}</td>
+            <td style='word-wrap: break-word;'>{{ product.name }}</td>
+            <td style='word-wrap: break-word;'>{{ product.url }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    </div>
+
+    <div class="row">
+            <div class="col-md-6"></div>
+            <div class="col-md-6"></div>
+    </div>
+{% endblock %}

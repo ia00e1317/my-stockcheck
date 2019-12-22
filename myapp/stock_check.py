@@ -17,7 +17,6 @@ import requests
 from bs4 import BeautifulSoup
 from pathlib import Path
 import urllib
-import time
 
 
 def getConnection():
@@ -34,6 +33,7 @@ def getConnection():
 
 def checkKeywords(url,check_list):
     html = requests.get(url)
+    #html = requests.get(url,verify=False)
     soup = BeautifulSoup(html.content, "html.parser")
 
     flg = True
@@ -143,6 +143,7 @@ def stock_check():
         if product['classname_2'] and product['classname_2']:
             check_list.append( [ product['classname_2'],product['tagtype_2'],product['attribute_2'],product['keyword_2'] ] )        
         resultVal = checkKeywords(url,check_list)
+        #time.sleep(1)
         sql = "UPDATE products_url SET result = %s, date = %s WHERE id = %s"
         cursor.execute(sql,(resultVal,today,product['id']))
 
@@ -182,39 +183,42 @@ def update_url():#id
     data = {}
     currentFields = []
     for i,product in enumerate(products):
-        idx = i+1
-        data['siteDrop'+str(idx)] = request.form['siteDrop'+str(idx)] or ""
-        data['name'+str(idx)] = request.form['name'+str(idx)] or ""
-        data['url'+str(idx)] = request.form['url'+str(idx)] or ""
+        cd = str(i+1)
+        data['siteDrop'+cd] = request.form['siteDrop'+cd] or ""
+        data['name'+cd] = request.form['name'+cd] or ""
+        data['url'+cd] = request.form['url'+cd] or ""
 
         dic = {}
-        dic['type'] = request.form['siteDrop'+str(idx)] or ""
-        dic['name'] = request.form['name'+str(idx)] or ""
-        dic['url'] = request.form['url'+str(idx)] or ""
+        dic['type'] = request.form['siteDrop'+cd] or ""
+        dic['name'] = request.form['name'+cd] or ""
+        dic['url'] = request.form['url'+cd] or ""
         currentFields.append(dic)
 
     flag = False
     for i,product in enumerate(products):
-        idx = i+1
-        if (data['siteDrop'+str(idx)] == '0' and data['name'+str(idx)] == '' and data['url'+str(idx)] == ''):
+        cd = str(i+1)
+        if (data['siteDrop'+cd] == '0' and data['name'+cd] == '' and data['url'+cd] == ''):
             pass
-        elif (data['siteDrop'+str(idx)] != '0' and data['name'+str(idx)] != '' and data['url'+str(idx)] != ''):
+        elif (data['siteDrop'+cd] != '0' and data['name'+cd] != '' and data['url'+cd] != ''):
             pass
         else:
-            message = "No" + str(idx) + ".[サイト種類]、[商品名]、[URL]を全て入力するか、または全て未入力にしてください。"
+            message = "No" + cd + ".[サイト種類]、[商品名]、[URL]を全て入力するか、または全て未入力にしてください。"
             flash(message, "failed")
             flag = True
     if flag:
+        cursor.close()###
+        connection.close()###
         return render_template("edit.html", products = currentFields, typeList = typeList)
 
     for i,product in enumerate(products):
         idx = i+1
-        val1 = request.form['siteDrop'+str(idx)] or ""
+        cd = str(i+1)
+        val1 = request.form['siteDrop'+cd] or ""
         if val1 == '0':
             val1 = ''
         val2 = outputType(val1)
-        val3 = request.form['name'+str(idx)] or "" 
-        val4 = request.form['url'+str(idx)] or "" 
+        val3 = request.form['name'+cd] or "" 
+        val4 = request.form['url'+cd] or "" 
 
         sql = "UPDATE products_url SET type = '', site = '', name = '', url = '', result = '', date = '' WHERE id = %s"
         cursor.execute(sql,(idx))
@@ -286,21 +290,24 @@ def add_def():
                 flash(message, "failed")
                 returnFlag = True
     if returnFlag:
+        cursor.close()###
+        connection.close()###
         return render_template("definition.html", definitions = currentFields)
 
     for i,definition in enumerate(definitions):
-        idx = i + 1
+        idx = i+1
+        cd = str(i+1)
         val1 = definition['type'] or ""
-        #val1 = request.form['type'+str(idx)] or ""
-        val2 = request.form['site'+str(idx)] or ""
-        val3 = request.form['classname_1'+str(idx)] or ""
-        val4 = request.form['tagtype_1'+str(idx)] or ""
-        val5 = request.form['attribute_1'+str(idx)] or ""
-        val6 = request.form['keyword_1'+str(idx)] or ""
-        val7 = request.form['classname_2'+str(idx)] or ""
-        val8 = request.form['tagtype_2'+str(idx)] or ""
-        val9 = request.form['attribute_2'+str(idx)] or ""
-        val10 = request.form['keyword_2'+str(idx)] or ""
+        #val1 = request.form['type'+cd] or ""
+        val2 = request.form['site'+cd] or ""
+        val3 = request.form['classname_1'+cd] or ""
+        val4 = request.form['tagtype_1'+cd] or ""
+        val5 = request.form['attribute_1'+cd] or ""
+        val6 = request.form['keyword_1'+cd] or ""
+        val7 = request.form['classname_2'+cd] or ""
+        val8 = request.form['tagtype_2'+cd] or ""
+        val9 = request.form['attribute_2'+cd] or ""
+        val10 = request.form['keyword_2'+cd] or ""
 
         sql = "UPDATE tag_def SET type = %s, site = %s, classname_1 = %s, tagtype_1 = %s, attribute_1 = %s, keyword_1 = %s, classname_2 = %s, tagtype_2 = %s, attribute_2 = %s, keyword_2 = %s WHERE id = %s"
         cursor.execute(sql,(val1,val2,val3,val4,val5,val6,val7,val8,val9,val10,idx))

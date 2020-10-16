@@ -5,13 +5,6 @@ import time
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "stock_check"
 
-#app = Flask('sample')
-#print(app.config)
-
-#import pandas as pd
-#import openpyxl
-#import openpyxl as opx
-#from datetime import date
 
 import requests
 from bs4 import BeautifulSoup
@@ -44,13 +37,11 @@ def checkKeywords(url,check_list):
         keyword = check[3]
 
         txt_list = []
-        for target in soup.find_all(class_=classname):#
-            for element in target.find_all(tagtype):#
+        for target in soup.find_all(class_=classname):
+            for element in target.find_all(tagtype):
                 if attribute:
-                    #txt_list.append(element.get(attribute).strip())
                     txt_list.append(element.get(attribute))
                 else:
-                    #txt_list.append(element.text.strip())
                     txt_list.append(element.text)
 
         if keyword in txt_list:
@@ -133,8 +124,7 @@ def stock_check():
     products = cursor.fetchall()
 
     today = datetime.date.today()
-    #thisTime = time.strftime("%H:%M:%S %a")
-    #thisTime = time.strftime("%p %I:%M:%S %a")
+
     for product in products:
         if not product['type']:
             continue
@@ -143,7 +133,6 @@ def stock_check():
         if product['classname_2'] and product['classname_2']:
             check_list.append( [ product['classname_2'],product['tagtype_2'],product['attribute_2'],product['keyword_2'] ] )        
         resultVal = checkKeywords(url,check_list)
-        #time.sleep(1)
         sql = "UPDATE products_url SET result = %s, date = %s WHERE id = %s"
         cursor.execute(sql,(resultVal,today,product['id']))
 
@@ -154,8 +143,8 @@ def stock_check():
     return redirect(url_for("select_sql"))
 
 
-@app.route('/edit')#/<int:id>
-def edit_url():#id
+@app.route('/edit')
+def edit_url():
     typeList = outputTypeList()
 
     connection = getConnection()
@@ -169,9 +158,8 @@ def edit_url():#id
     return render_template('edit.html', products = products, typeList = typeList)
 
 
-#@app.route('/update')#/<int:id>
-@app.route('/update', methods=['POST'])#/<int:id>
-def update_url():#id
+@app.route('/update', methods=['POST'])
+def update_url():
     typeList = outputTypeList()
 
     connection = getConnection()
@@ -274,7 +262,8 @@ def add_def():
         dic['keyword_2'] = request.form['keyword_2'+cd] or ""
         currentFields.append(dic)
 
-        if request.form['site'+cd]:#サイトに入力あり
+        #サイトに入力あり
+        if request.form['site'+cd]:
             if findEmpty(dic, baseFields):
                 message = "No." + cd + "→[サイト名]に入力する場合は【A：必須】の項目は全て入力してください。"
                 flash(message, "failed")
@@ -284,14 +273,15 @@ def add_def():
                     message = "No." + cd + "→B(緑)の項目に入力する場合は【B：必須】の項目は全て入力してください。"
                     flash(message, "failed")
                     returnFlag = True
-        else:#サイトに入力なし
+        #サイトに入力なし       
+        else:
             if findEntered(dic, allFields):
                 message = "No." + cd + "→[サイト名]を空白にする場合は全ての項目を空白にしてください。"
                 flash(message, "failed")
                 returnFlag = True
     if returnFlag:
-        cursor.close()###
-        connection.close()###
+        cursor.close()
+        connection.close()
         return render_template("definition.html", definitions = currentFields)
 
     for i,definition in enumerate(definitions):
